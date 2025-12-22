@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: memory-eater-com-limites
+  labels:
+    app: memory-eater
+    scenario: com-limites
+spec:
+  containers:
+  - name: app
+    image: linuxtips/memory-eater:0.2
+    startupProbe:
+      httpGet:
+        path: /startupz
+        port: 8080
+      initialDelaySeconds: 15
+      periodSeconds: 3
+      failureThreshold: 10
+    livenessProbe:
+      httpGet:
+        path: /livez
+        port: 8080
+      initialDelaySeconds: 5
+      periodSeconds: 10
+      failureThreshold: 3
+    readinessProbe:
+      httpGet:
+        path: /readyz
+        port: 8080
+      initialDelaySeconds: 10
+      periodSeconds: 5
+      failureThreshold: 3
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "250m"
+    limits:
+      cpu: "500m"
+  restartPolicy: Always
